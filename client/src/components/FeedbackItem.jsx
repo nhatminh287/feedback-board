@@ -7,7 +7,6 @@ import {
   Box,
   Avatar,
   Tooltip,
-  useTheme
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -16,7 +15,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 function FeedbackItem({ item, onDelete, onLike }) {
-  const theme = useTheme();
+
   const [liked, setLiked] = useState(false);
   
   const formatDate = (timestamp) => {
