@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { Container, Box, Typography, CircularProgress, Fab } from '@mui/material';
+import { Container, Box, CircularProgress, Fab } from '@mui/material';
 import { motion } from 'framer-motion';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Header from './components/Header';
@@ -8,11 +8,13 @@ import FeedbackForm from './components/FeedbackForm';
 import FeedbackList from './components/FeedbackList';
 import EmptyState from './components/EmptyState';
 import { ThemeProviderWrapper } from './theme/ThemeContext';
+import { SnackbarProvider, useSnackbar } from './components/SnackbarManager';
 
-function App() {
+function AppContent() {
   const [feedbackItems, setFeedbackItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const formRef = useRef(null);
+  const showSnackbar = useSnackbar();
 
   // Fetch feedback items when component mounts
   useEffect(() => {
@@ -27,6 +29,7 @@ function App() {
       setFeedbackItems(response.data);
     } catch (error) {
       console.error('Error fetching feedback:', error);
+      showSnackbar('Failed to load feedback', 'error');
     } finally {
       setIsLoading(false);
     }
@@ -37,22 +40,24 @@ function App() {
     try {
       const response = await axios.post('/api/feedback', newFeedback);
       setFeedbackItems([response.data, ...feedbackItems]);
+      showSnackbar('Thank you for your feedback!', 'success');
       return response.data;
     } catch (error) {
       console.error('Error adding feedback:', error);
+      showSnackbar('Failed to submit feedback', 'error');
       throw error;
     }
   };
 
   // Delete feedback
   const deleteFeedback = async (id) => {
-    if (window.confirm('Are you sure you want to delete this feedback?')) {
-      try {
-        await axios.delete(`/api/feedback/${id}`);
-        setFeedbackItems(feedbackItems.filter(item => item.id !== id));
-      } catch (error) {
-        console.error('Error deleting feedback:', error);
-      }
+    try {
+      await axios.delete(`/api/feedback/${id}`);
+      setFeedbackItems(feedbackItems.filter((item) => item.id !== id));
+      showSnackbar('Feedback deleted successfully', 'info');
+    } catch (error) {
+      console.error("Error deleting feedback:", error);
+      showSnackbar('Failed to delete feedback', 'error');
     }
   };
 
@@ -67,6 +72,7 @@ function App() {
       );
     } catch (error) {
       console.error('Error liking feedback:', error);
+      showSnackbar('Failed to like feedback', 'error');
     }
   };
 
@@ -79,7 +85,7 @@ function App() {
   };
 
   return (
-    <ThemeProviderWrapper>
+    <>
       <Header />
       <Container maxWidth="md">
         <Box ref={formRef} sx={{ mb: 6 }}>
@@ -120,6 +126,16 @@ function App() {
           </Fab>
         </motion.div>
       </Container>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProviderWrapper>
+      <SnackbarProvider>
+        <AppContent />
+      </SnackbarProvider>
     </ThemeProviderWrapper>
   );
 }

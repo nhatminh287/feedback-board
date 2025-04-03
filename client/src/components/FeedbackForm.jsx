@@ -6,8 +6,7 @@ import {
   TextField, 
   Button, 
   Box,
-  LinearProgress,
-  Alert
+  LinearProgress
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { motion } from 'framer-motion';
@@ -18,7 +17,6 @@ function FeedbackForm({ onAdd }) {
   const [nameError, setNameError] = useState('');
   const [messageError, setMessageError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
   
   const MAX_LENGTH = 300;
   const messageProgress = (message.length / MAX_LENGTH) * 100;
@@ -29,7 +27,6 @@ function FeedbackForm({ onAdd }) {
     // Reset errors and states
     setNameError('');
     setMessageError('');
-    setSubmitSuccess(false);
     
     // Validation
     let isValid = true;
@@ -52,7 +49,6 @@ function FeedbackForm({ onAdd }) {
       
       try {
         await onAdd({ name, message });
-        setSubmitSuccess(true);
         
         // Reset form
         setName('');
@@ -76,22 +72,6 @@ function FeedbackForm({ onAdd }) {
           <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
             Share Your Thoughts
           </Typography>
-          
-          {submitSuccess && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Alert 
-                severity="success" 
-                sx={{ mb: 2 }}
-                onClose={() => setSubmitSuccess(false)}
-              >
-                Thank you for your feedback!
-              </Alert>
-            </motion.div>
-          )}
           
           <Box 
             component="form" 
