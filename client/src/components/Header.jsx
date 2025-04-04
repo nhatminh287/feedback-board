@@ -11,7 +11,6 @@ import { motion } from 'framer-motion';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import FeedbackIcon from '@mui/icons-material/Feedback';
-// Make sure this import path is correct
 import { ColorModeContext } from '../theme/ThemeContext';
 
 const Header = () => {

@@ -16,12 +16,11 @@ function AppContent() {
   const formRef = useRef(null);
   const showSnackbar = useSnackbar();
 
-  // Fetch feedback items when component mounts
   useEffect(() => {
     fetchFeedback();
+  //eslint-disable-next-line
   }, []);
 
-  // Fetch all feedback
   const fetchFeedback = async () => {
     try {
       setIsLoading(true);
